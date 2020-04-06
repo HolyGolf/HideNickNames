@@ -33,6 +33,8 @@ public class HideClass implements Listener, CommandExecutor {
     Objective obj2 = board2.registerNewObjective("MCBR2", "dummy2");
     Team name = board2.registerNewTeam("name");
 
+    Boolean check;
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         nameless.setNameTagVisibility(NameTagVisibility.NEVER);
@@ -47,6 +49,7 @@ public class HideClass implements Listener, CommandExecutor {
                     for (Player online : Bukkit.getOnlinePlayers()) {
                             nameless.addPlayer(online);
                             online.setScoreboard(board);
+                            check = true;
                     }
                     return true;
                 } else if (args[0].equals("off")) {
@@ -55,6 +58,7 @@ public class HideClass implements Listener, CommandExecutor {
                         name.addPlayer(online);
                         online.setScoreboard(board2);
                     }
+                    check = false;
                     return true;
                 } else {
                     sender.sendMessage(ChatColor.YELLOW + "What?!");
@@ -72,12 +76,14 @@ public class HideClass implements Listener, CommandExecutor {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (check) {
         if (plugin.getConfig().getBoolean("Hide_NameTags", true)) {
             Player p = event.getPlayer();
                 nameless.setNameTagVisibility(NameTagVisibility.NEVER);
                 for (Player online : Bukkit.getOnlinePlayers()) {
                     nameless.addPlayer(online);
                     online.setScoreboard(board);
+                }
             }
         }
     }
