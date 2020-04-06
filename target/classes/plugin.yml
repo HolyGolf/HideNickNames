@@ -1,5 +1,5 @@
 name: HideNicknames
-version: 1.5
+version: 1.6
 main: hidenicknames.hidenicknames.HideNicknames
 api-version: 1.13
 authors: [HolyGolf]
