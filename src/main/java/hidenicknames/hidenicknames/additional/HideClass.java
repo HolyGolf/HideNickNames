@@ -5,7 +5,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.*;
 
 
@@ -33,7 +31,7 @@ public class HideClass implements Listener, CommandExecutor {
     Objective obj2 = board2.registerNewObjective("MCBR2", "dummy2");
     Team name = board2.registerNewTeam("name");
 
-    Boolean check;
+    boolean check = true;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -57,8 +55,8 @@ public class HideClass implements Listener, CommandExecutor {
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         name.addPlayer(online);
                         online.setScoreboard(board2);
+                        check = false;
                     }
-                    check = false;
                     return true;
                 } else {
                     sender.sendMessage(ChatColor.YELLOW + "What?!");
@@ -76,16 +74,16 @@ public class HideClass implements Listener, CommandExecutor {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (check) {
+        Player p = event.getPlayer();
+            if (check) {
         if (plugin.getConfig().getBoolean("Hide_NameTags", true)) {
-            Player p = event.getPlayer();
                 nameless.setNameTagVisibility(NameTagVisibility.NEVER);
                 for (Player online : Bukkit.getOnlinePlayers()) {
                     nameless.addPlayer(online);
                     online.setScoreboard(board);
                 }
+                }
             }
-        }
     }
 
     @EventHandler
