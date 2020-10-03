@@ -1,22 +1,25 @@
 # HideNickNames
-Plugin for minecraft 1.15.2
 This plugin allows you to hide and show player nicknames.
-
-![hnames command](/images/1.png)
 
  ## Commands:
   /hnames - help command
   /hnames on - hide players nick names.
   /hnames off - show players nicknames
   
- ## Hnames on
+ ![hnames command](/imagies/1.png)
  
-![hnames on](/images/2.png)
+ ## /hnames on
+ 
+![hnames on](/imagies/4.png)
 
- ## Hnames off
+ ## /hnames off
  
- ![hnames off](/images/3.png)
+ ![hnames off](/imagies/3.png)
+ 
+ ## You can also right-click on a player to see his nickname:
+ 
+ ![click](/imagies/2.png)
  
  ## Config file:
  
- ![config](/images/5.png)
+ ![config](/imagies/5.png)
