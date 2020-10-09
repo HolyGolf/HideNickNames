@@ -1,3 +1,5 @@
+ ![logo](/imagies/6.png)
+
 # HideNickNames
 This plugin allows you to hide and show player nicknames.
 
