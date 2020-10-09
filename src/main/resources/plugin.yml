@@ -1,5 +1,5 @@
 name: HideNickNames
-version: ${project.version}
+version: V2.1
 main: hidenicknames.hidenicknames.HideNickNames
 api-version: 1.13
 authors: [HolyGolf]

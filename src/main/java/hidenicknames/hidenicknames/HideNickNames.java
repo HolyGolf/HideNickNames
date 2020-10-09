@@ -1,11 +1,11 @@
 package hidenicknames.hidenicknames;
 
+import hidenicknames.hidenicknames.commands.UpdateChecker;
 import hidenicknames.hidenicknames.commands.commands;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
+import java.util.logging.Logger;
 
 public final class HideNickNames extends JavaPlugin implements Listener {
 
@@ -16,6 +16,16 @@ public void onEnable() {
 	loadConfig(); /*Загрузка конфига*/
 	getServer().getPluginManager().registerEvents(new commands(), this); /*Регистрация ивентов в другом классе*/
 	this.getCommand("hnames").setExecutor(new commands()); /*Команда hnames*/
+
+	Logger logger = this.getLogger();
+
+	new UpdateChecker(this, 77039).getVersion(version -> {
+		if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+			logger.info("There is not a new update available.");
+		} else {
+			logger.info("New update available.");
+		}
+	});
 }
 
 @Override
