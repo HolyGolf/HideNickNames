@@ -28,7 +28,7 @@ public static HashMap<String, Boolean> plug = new HashMap<>();
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 	if (args.length == 0) /*Если нет аргументов*/ {
-		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "------{\nHideNickName\n" + ChatColor.AQUA + "" + ChatColor.BOLD + "/hnames [on/off]\n" + ChatColor.YELLOW + "" + ChatColor.BOLD + "}------"); /*Отображение списка команд в чате*/
+		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "------{\nHideNickNames\n" + ChatColor.AQUA + "" + ChatColor.BOLD + "/hnames [on/off]\n" + ChatColor.YELLOW + "" + ChatColor.BOLD + "}------"); /*Отображение списка команд в чате*/
 		return true;
 	} else if (sender.hasPermission("HideNicknames.switching") || sender.isOp()) /*Проверка на права*/ {
 		if (cmd.getName().equalsIgnoreCase("hnames") && sender instanceof Player) /*Проверка на консоль*/ {
