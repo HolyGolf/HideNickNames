@@ -16,6 +16,12 @@ This plugin allows you to hide and show player nicknames.
  
 ![hnames on](/imagies/4.png)
 
+```
+Notice: When you are standing in the nether portal,
+in a world where nickname hiding is enabled, then
+your nickname is visible. Sorry, it was just the easiest
+solution to the problem :) I'll fix it with updates.
+```
  ## /hnames off
  
  ![hnames off](/imagies/3.png)
