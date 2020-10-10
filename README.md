@@ -32,7 +32,7 @@ solution to the problem :) I'll fix it with updates.
  
  ## Config file:
  
-```python
+```yml
 #true - on || false - off
 Hide_NameTags: true
 #Turning nickname hiding on and off on join
