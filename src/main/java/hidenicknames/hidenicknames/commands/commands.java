@@ -23,6 +23,7 @@ private HideNickNames plugin = HideNickNames.getPlugin(HideNickNames.class);
 
 public static HashMap<UUID, ArmorStand> hide = new HashMap<>();
 public static HashMap<String, Boolean> plug = new HashMap<>();
+public static int idt;
 
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -33,25 +34,25 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 	} else if (sender.hasPermission("HideNicknames.switching") || sender.isOp()) /*Проверка на права*/ {
 		if (cmd.getName().equalsIgnoreCase("hnames") && sender instanceof Player) /*Проверка на консоль*/ {
 			if (args[0].equals("on")) /*Команда выключения ников*/ {
-					sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns on...");
-					if (!plug.isEmpty()) {
-						plug.remove("Enable");
-					}
-					for (Player online : Bukkit.getOnlinePlayers()) {
-						String world = online.getWorld().getName();
-						if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
-							hide(online);
+				sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns on...");
+				if (!plug.isEmpty()) {
+					plug.remove("Enable");
+				}
+				for (Player online : Bukkit.getOnlinePlayers()) {
+					String world = online.getWorld().getName();
+					if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
+						hide(online);
 					}
 				}
 				return true;
 			} else if (args[0].equals("off")) /*Команда включения ников*/ {
-					sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns off...");
-					if (plug.isEmpty()) {
-						plug.put("Enable", false);
-					}
-					for (Player online : Bukkit.getOnlinePlayers()) {
-						unhide(online);
-					}
+				sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns off...");
+				if (plug.isEmpty()) {
+					plug.put("Enable", false);
+				}
+				for (Player online : Bukkit.getOnlinePlayers()) {
+					unhide(online);
+				}
 			} else {
 				sender.sendMessage(ChatColor.YELLOW + "What?!"); /*Если человек с iq <10 и не может ввести либо "on" либо "off"*/
 			}
@@ -114,6 +115,29 @@ public void onPlayerQuit(PlayerQuitEvent event) {
 }
 
 @EventHandler
+public void ChatFormat(AsyncPlayerChatEvent event) {
+	if (plugin.getConfig().getBoolean("TextAboveHead")) {
+		int time = plugin.getConfig().getInt("TextAboveHeadDelay");
+		ArmorStand stand = hide.get(event.getPlayer().getUniqueId());
+		if ( stand != null) {
+			if (event.getMessage().length() > 26) {
+				Bukkit.getScheduler().cancelTask(idt);
+				String msg = event.getMessage().substring(0, 26) + "...";
+				stand.setCustomName(msg);
+				stand.setCustomNameVisible(true);
+				idt = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						stand.setCustomName("");
+						stand.setCustomNameVisible(false);
+					}
+				}, (time*20));
+			}
+		}
+	}
+}
+
+@EventHandler
 public void onPlayerRespawn(PlayerRespawnEvent event) {
 	Player p = event.getPlayer();
 	unhide(p);
@@ -154,11 +178,13 @@ public void onSpellPlayer(PlayerInteractEntityEvent event) {
 	if (plugin.getConfig().getBoolean("Show_NameTags", true)) {
 		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
-		Player ent = (Player) entity;
-		String world = player.getWorld().getName();
-		if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
+		if (entity instanceof Player) {
+			Player ent = (Player) entity;
+			String world = player.getWorld().getName();
+			if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
 				String message = ChatColor.GOLD + "" + ChatColor.BOLD + "-=[" + ChatColor.AQUA + "" + ChatColor.BOLD + ent.getDisplayName() + ChatColor.GOLD + "" + ChatColor.BOLD + "]=-";
 				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+			}
 		}
 	}
 }

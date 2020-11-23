@@ -6,7 +6,7 @@
 
     <groupId>HideNickNames</groupId>
     <artifactId>HideNickNames</artifactId>
-    <version>V2.1</version>
+    <version>2.3</version>
     <packaging>jar</packaging>
 
     <name>HideNickNames</name>
