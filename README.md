@@ -3,13 +3,13 @@
 # HideNickNames
 This plugin allows you to hide and show player nicknames.
 
- ## Commands:
-  /hnames - help command
-  
-  /hnames on - hide players nick names.
-  
-  /hnames off - show players nicknames
-  
+```
+Commands:
+/hnames - help command.
+/hnames reload - reload plugin. (HideNicknames.switching permission)
+/hnames on/off - Hide/Unhide nicknames. (HideNicknames.switching permission)
+```
+
  ![hnames command](/imagies/1.png)
  
  ## /hnames on
