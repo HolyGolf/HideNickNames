@@ -29,7 +29,7 @@ public static int idt;
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 	if (args.length == 0) /*Если нет аргументов*/ {
-		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "------{\nHideNickNames\n" + ChatColor.AQUA + "" + ChatColor.BOLD + "/hnames [on/off]\n" + ChatColor.YELLOW + "" + ChatColor.BOLD + "}------"); /*Отображение списка команд в чате*/
+		sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "------{\nHideNickNames\n" + ChatColor.AQUA + "" + ChatColor.BOLD + "/hnames [on/off/reload]\n" + ChatColor.YELLOW + "" + ChatColor.BOLD + "}------"); /*Отображение списка команд в чате*/
 		return true;
 	} else if (sender.hasPermission("HideNicknames.switching") || sender.isOp()) /*Проверка на права*/ {
 		if (cmd.getName().equalsIgnoreCase("hnames") && sender instanceof Player) /*Проверка на консоль*/ {
@@ -53,6 +53,17 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 				for (Player online : Bukkit.getOnlinePlayers()) {
 					unhide(online);
 				}
+			} else if (args[0].equals("reload")) /*Команда включения ников*/ {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					unhide(p);
+				}
+				plugin.reloadConfig();
+				plugin.getServer().getPluginManager().disablePlugin(plugin);
+				plugin.getServer().getPluginManager().enablePlugin(plugin);
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					check(p);
+				}
+				sender.sendMessage(ChatColor.GOLD + "[HideNickNames]: Plugin reloaded");
 			} else {
 				sender.sendMessage(ChatColor.YELLOW + "What?!"); /*Если человек с iq <10 и не может ввести либо "on" либо "off"*/
 			}
@@ -62,7 +73,7 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 			return true;
 		}
 	} else {
-		sender.sendMessage(ChatColor.RED + plugin.getConfig().getString("NoPermissionsMessage"));
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("NoPermissionsMessage")));
 		return true;
 	}
 	return true;
@@ -115,29 +126,6 @@ public void onPlayerQuit(PlayerQuitEvent event) {
 }
 
 @EventHandler
-public void ChatFormat(AsyncPlayerChatEvent event) {
-	if (plugin.getConfig().getBoolean("TextAboveHead")) {
-		int time = plugin.getConfig().getInt("TextAboveHeadDelay");
-		ArmorStand stand = hide.get(event.getPlayer().getUniqueId());
-		if ( stand != null) {
-			if (event.getMessage().length() > 26) {
-				Bukkit.getScheduler().cancelTask(idt);
-				String msg = event.getMessage().substring(0, 26) + "...";
-				stand.setCustomName(msg);
-				stand.setCustomNameVisible(true);
-				idt = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-					@Override
-					public void run() {
-						stand.setCustomName("");
-						stand.setCustomNameVisible(false);
-					}
-				}, (time*20));
-			}
-		}
-	}
-}
-
-@EventHandler
 public void onPlayerRespawn(PlayerRespawnEvent event) {
 	Player p = event.getPlayer();
 	unhide(p);
@@ -150,6 +138,13 @@ public void onPlayerRespawn(PlayerRespawnEvent event) {
 public void onPlayerJoin(PlayerJoinEvent event) {
 	Player p = event.getPlayer();
 	check(p);
+	if (p.isOp()) {
+		new UpdateChecker(plugin, 77039).getVersion(version -> {
+			if (!plugin.getDescription().getVersion().equalsIgnoreCase(version)) {
+				p.sendMessage(ChatColor.GOLD + "[HideNickNames]: New version " + version + " available at https://www.spigotmc.org/resources/hidenicknames.77039/");
+			}
+		});
+	}
 }
 
 @EventHandler
@@ -182,7 +177,8 @@ public void onSpellPlayer(PlayerInteractEntityEvent event) {
 			Player ent = (Player) entity;
 			String world = player.getWorld().getName();
 			if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
-				String message = ChatColor.GOLD + "" + ChatColor.BOLD + "-=[" + ChatColor.AQUA + "" + ChatColor.BOLD + ent.getDisplayName() + ChatColor.GOLD + "" + ChatColor.BOLD + "]=-";
+				String mess1 = plugin.getConfig().getString("NameTags_show").replaceAll("<player>", ent.getDisplayName());
+				String message = ChatColor.translateAlternateColorCodes('&', mess1);
 				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 			}
 		}
