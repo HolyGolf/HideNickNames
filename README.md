@@ -40,10 +40,6 @@ Show_NameTags: true
 #Show player NameTag on right click
 NameTags_show: '&l&6-=[&9<player>&l&6]=-'
 #<player> - player nickname
-TextAboveHead: true
-#Shows the player's message above his head
-TextAboveHeadDelay: 7
-#Time after which the message will disappear (In seconds)
 Permissons: true
 # | HideNicknames.switching | Allows you to enable or disable the visibility of names for all (Enable or disable plugin) (Default "Op")
 NoPermissionsMessage: '&cYou do not have permission to use this command!'
