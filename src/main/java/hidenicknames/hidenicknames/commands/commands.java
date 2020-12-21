@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.*;
 
@@ -88,6 +90,7 @@ public void hide(Player player){ /*Добавление стойки*/
 		stand.setInvulnerable(true);
 		stand.setMarker(true);
 		stand.setSmall(true);
+		stand.setCollidable(false);
 		stand.setCustomNameVisible(false);
 		player.addPassenger(stand);
 		hide.put(plr, stand);
@@ -164,6 +167,17 @@ public void onMove(PlayerMoveEvent event) {
 	} else {
 		if (!hide.containsKey(p.getUniqueId()) && plug.isEmpty()) {
 			check(p);
+		}
+	}
+}
+
+@EventHandler
+public void onUnmount(EntityDismountEvent event){
+	if(event.getEntity() instanceof ArmorStand){
+		if (event.getDismounted() instanceof Player) {
+			if (((Player) event.getDismounted()).getPlayer().isSwimming() || ((Player) event.getDismounted()).getPlayer().getLocation().getBlock().isLiquid()) {
+				event.setCancelled(true);
+			}
 		}
 	}
 }
