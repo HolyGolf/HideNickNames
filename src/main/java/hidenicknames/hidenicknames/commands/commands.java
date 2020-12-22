@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
-import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.*;
@@ -24,8 +23,6 @@ public class commands implements Listener, CommandExecutor {
 private HideNickNames plugin = HideNickNames.getPlugin(HideNickNames.class);
 
 public static HashMap<UUID, ArmorStand> hide = new HashMap<>();
-public static HashMap<String, Boolean> plug = new HashMap<>();
-public static int idt;
 
 @Override
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -37,23 +34,32 @@ public boolean onCommand(CommandSender sender, Command cmd, String label, String
 		if (cmd.getName().equalsIgnoreCase("hnames") && sender instanceof Player) /*Проверка на консоль*/ {
 			if (args[0].equals("on")) /*Команда выключения ников*/ {
 				sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns on...");
-				if (!plug.isEmpty()) {
-					plug.remove("Enable");
+				plugin.getConfig().set("Hide_NameTags", true);
+				plugin.saveConfig();
+				plugin.reloadConfig();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					unhide(p);
 				}
-				for (Player online : Bukkit.getOnlinePlayers()) {
-					String world = online.getWorld().getName();
-					if (plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
-						hide(online);
-					}
+				plugin.reloadConfig();
+				plugin.getServer().getPluginManager().disablePlugin(plugin);
+				plugin.getServer().getPluginManager().enablePlugin(plugin);
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					check(p);
 				}
 				return true;
 			} else if (args[0].equals("off")) /*Команда включения ников*/ {
 				sender.sendMessage(ChatColor.YELLOW + "HideNickNames: plugin turns off...");
-				if (plug.isEmpty()) {
-					plug.put("Enable", false);
+				plugin.getConfig().set("Hide_NameTags", false);
+				plugin.saveConfig();
+				plugin.reloadConfig();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					unhide(p);
 				}
-				for (Player online : Bukkit.getOnlinePlayers()) {
-					unhide(online);
+				plugin.reloadConfig();
+				plugin.getServer().getPluginManager().disablePlugin(plugin);
+				plugin.getServer().getPluginManager().enablePlugin(plugin);
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					check(p);
 				}
 			} else if (args[0].equals("reload")) /*Команда включения ников*/ {
 				for (Player p : Bukkit.getOnlinePlayers()) {
@@ -107,11 +113,7 @@ public void unhide(Player player) {
 public void check(Player player) { /*Проверка и действие*/
 	String world = player.getWorld().getName();
 	if (plugin.getConfig().getBoolean("Hide_NameTags", true) && plugin.getConfig().getStringList("Enabled_Worlds").contains(world)) {
-		if (plug.isEmpty()) { /*Скрытие ников при входе*/
-			hide(player);
-		} else { /*Отображение ников при входе*/
-			unhide(player);
-		}
+		hide(player);
 	} else {
 		unhide(player);
 	}
@@ -165,7 +167,7 @@ public void onMove(PlayerMoveEvent event) {
 	if (event.getTo().getBlock().getType().equals((Material.END_PORTAL)) || event.getTo().getBlock().getType().equals(Material.NETHER_PORTAL)) {
 		unhide(p);
 	} else {
-		if (!hide.containsKey(p.getUniqueId()) && plug.isEmpty()) {
+		if (!hide.containsKey(p.getUniqueId()) && plugin.getConfig().getBoolean("Hide_NameTags")) {
 			check(p);
 		}
 	}
