@@ -35,7 +35,7 @@ solution to the problem :) I'll fix it with updates.
 ```yml
 #true - on || false - off
 Hide_NameTags: true
-#Turning nickname hiding on and off on join
+#Enable/Disable plugin
 Show_NameTags: true
 #Show player NameTag on right click
 NameTags_show: '&l&6-=[&9<player>&l&6]=-'
